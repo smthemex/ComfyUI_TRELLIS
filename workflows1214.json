@@ -1,0 +1,211 @@
+{
+  "last_node_id": 14,
+  "last_link_id": 14,
+  "nodes": [
+    {
+      "id": 7,
+      "type": "Trellis_LoadModel",
+      "pos": [
+        14960.392578125,
+        1119.3734130859375
+      ],
+      "size": [
+        315,
+        130
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL_TRELLIS",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Trellis_LoadModel"
+      },
+      "widgets_values": [
+        "F:/test/ComfyUI/models/diffusers/JeffreyXiang/TRELLIS-image-large",
+        "dinov2_vitl14_reg4_pretrain.pth",
+        "flash-attn",
+        "auto"
+      ]
+    },
+    {
+      "id": 14,
+      "type": "Trellis_Sampler",
+      "pos": [
+        15319.837890625,
+        805.23291015625
+      ],
+      "size": [
+        315,
+        366
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 12
+        },
+        {
+          "name": "model",
+          "type": "MODEL_TRELLIS",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "glb_path",
+          "type": "STRING",
+          "links": [
+            14
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Trellis_Sampler"
+      },
+      "widgets_values": [
+        952685632,
+        "randomize",
+        7.5,
+        12,
+        3,
+        12,
+        false,
+        512,
+        0.95,
+        "fast",
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 13,
+      "type": "ShowText|pysssss",
+      "pos": [
+        15664.359375,
+        806.3975219726562
+      ],
+      "size": [
+        326.9181823730469,
+        359.8692932128906
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 14,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null,
+          "shape": 6
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        "",
+        "F:\\test\\ComfyUI\\output/ebed9306-2103-41dc-90c9-687cec5d27ed.glb"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [
+        14961.4677734375,
+        744.7298583984375
+      ],
+      "size": [
+        315,
+        314
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            12
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "typical_creature_robot_dinosour.png",
+        "image"
+      ]
+    }
+  ],
+  "links": [
+    [
+      12,
+      3,
+      0,
+      14,
+      0,
+      "IMAGE"
+    ],
+    [
+      13,
+      7,
+      0,
+      14,
+      1,
+      "MODEL_TRELLIS"
+    ],
+    [
+      14,
+      14,
+      0,
+      13,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9229599817707158,
+      "offset": [
+        -14725.77677175013,
+        -551.3107161433448
+      ]
+    }
+  },
+  "version": 0.4
+}
