@@ -55,12 +55,18 @@ def _make_dinov2_model(
 
     if pretrained:
         model_full_name = _make_dinov2_model_name(arch_name, patch_size, num_register_tokens)
-        
-        #url = _DINOV2_BASE_URL + f"/{model_base_name}/{model_full_name}_pretrain.pth"
-        url = weights
-        state_dict = torch.hub.load_state_dict_from_url(url, map_location="cpu")
+        try:
+            state_dict = torch.load(weights, map_location="cpu")
+        except:
+            weights=Weights.LVD142M
+            if isinstance(weights, str):
+                try:
+                    weights = Weights[weights]
+                except KeyError:
+                    raise AssertionError(f"Unsupported weights: {weights}")
+            url = _DINOV2_BASE_URL + f"/{model_base_name}/{model_full_name}_pretrain.pth"
+            state_dict = torch.hub.load_state_dict_from_url(url, map_location="cpu")
         model.load_state_dict(state_dict, strict=True)
-
     return model
 
 
