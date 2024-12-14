@@ -3,6 +3,7 @@ name = "comfyui_trellis"
 description = "you can use trellis in comfyUI"
 version = "1.0.0"
 license = "LICENSE"
+dependencies = ["pillow", "imageio", "imageio-ffmpeg", "tqdm", "easydict","opencv-python-headless","scipy","ninja","plyfile","diso","rembg","onnxruntime-gpu","trimesh","xatlas","pyvista","pymeshfix","igraph","git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8","xformers","spconv-cu120"]
 
 [project.urls]
 Repository = "https://github.com/smthemex/ComfyUI_TRELLIS"
