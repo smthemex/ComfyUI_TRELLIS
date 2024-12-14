@@ -6,7 +6,7 @@
 ---
 
 # Notice 注意
-* 只支持安装版的comfyUI，便携包目前测试无法运行（想了不少办法都不行），如果你用的是便携包，请暂时不要安装，秋叶包我没有，所以不知道能不能用。
+* 只支持安装版的comfyUI，便携包目前测试无法运行（想了不少办法都不行），如果你用的是便携包，请暂时不要安装，秋叶包经网友测试可以正常跑通。
 * Only supports the installation version of ComfyUI. The portable package is currently unable to run during testing (despite trying various methods). If you are using the portable package, please do not install it temporarily
 
   
