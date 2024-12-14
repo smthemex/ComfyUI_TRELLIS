@@ -57,12 +57,12 @@ pip install spconv-cu120  #这个最后安装 This is the final installation
 ```
 
 
-**2.1Other Need**
+**2.1 Other Need**
 * [kaolin](https://nvidia-kaolin.s3.us-east-2.amazonaws.com/index.html)   find  wheel，在这里找kaolin的各种版本轮子
 * [flas attention](https://github.com/Dao-AILab/flash-attention/releases/)  find  wheel,在这里找flash attention的各种版本轮子
 * [visualstudio](https://visualstudio.microsoft.com/zh-hans/)   visual studio2019 or high   windows必须安装
 
-**2.2visualstudio & cuda**
+**2.2 visualstudio & cuda**
 * 必须将visualstudio的cl.exe加入系统的环境变量path中，以下是windows系统示例，具体以自己的系统目录为准; 
 * The cl.exe of VisualStudio must be added to the system's environment variable path. Here is an example, please refer to your own system directory for details;  
 ```
@@ -72,6 +72,8 @@ pip install spconv-cu120  #这个最后安装 This is the final installation
  CUDA_PATH:   C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.4 # or  other version 或者其他版本
 
 ```
+
+**2.3 if use  glb2fbx need ' pip install bpy ' and install blender**
 
 
 # 3. Models Required 
