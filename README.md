@@ -52,8 +52,6 @@ pip install ./tmp/extensions/mip-splatting/submodules/diff-gaussian-rasterizatio
 cp -r ./extensions/vox2seq ./tmp/extensions/vox2seq
 pip install ./tmp/extensions/vox2seq
 
-pip install spconv-cu120  #这个最后安装 This is the final installation
-
 ```
 
 
