@@ -31,7 +31,7 @@ class Trellis_LoadModel:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "repo": ("STRING", {"default": "F:/test/ComfyUI/models/diffusers/JeffreyXiang/TRELLIS-image-large"}),
+                "repo": ("STRING", {"default": "JeffreyXiang/TRELLIS-image-large"}),
                 "dino": (["none"] + folder_paths.get_filename_list("dinov2"),),
                 "attn_backend":(["xformers","flash-attn"],),
                 "spconv_algo":(["auto","flash-native"],),
