@@ -310,10 +310,10 @@ def bake_texture(
     faces = torch.tensor(faces.astype(np.int32)).cuda()
     uvs = torch.tensor(uvs).cuda()
     observations = [torch.tensor(obs / 255.0).float().cuda() for obs in observations]
-    for i,obj in enumerate(observations):
-        image_np = obj.squeeze().mul(255).clamp(0, 255).byte().cpu().numpy()
-        image_ = Image.fromarray(image_np, mode='RGB')
-        image_.save(f"{i}_1.png")
+    # for i,obj in enumerate(observations):
+    #     image_np = obj.squeeze().mul(255).clamp(0, 255).byte().cpu().numpy()
+    #     image_ = Image.fromarray(image_np, mode='RGB')
+    #     image_.save(f"{i}_1.png")
     masks = [torch.tensor(m>0).bool().cuda() for m in masks]
     views = [utils3d.torch.extrinsics_to_view(torch.tensor(extr).cuda()) for extr in extrinsics]
     projections = [utils3d.torch.intrinsics_to_perspective(torch.tensor(intr).cuda(), near, far) for intr in intrinsics]
@@ -379,9 +379,7 @@ def bake_texture(
                 optimizer.zero_grad()
                 selected = np.random.randint(0, len(views))
                 uv, uv_dr, observation, mask = _uv[selected], _uv_dr[selected], observations[selected], masks[selected]
-                print(type(observation),type(mask))
                 render = dr.texture(texture, uv, uv_dr)[0]
-                print(render)
                 loss = torch.nn.functional.l1_loss(render[mask], observation[mask])
                 if lambda_tv > 0:
                     loss += lambda_tv * tv_loss(texture)
@@ -394,13 +392,13 @@ def bake_texture(
                 pbar.set_postfix({'loss': loss.item()})
                 pbar.update()
         texture = np.clip(texture[0].flip(0).detach().cpu().numpy() * 255, 0, 255).astype(np.uint8)
-        cv2.imwrite("123cv.png",texture)
+        
         mask = 1 - utils3d.torch.rasterize_triangle_faces(
             rastctx, (uvs * 2 - 1)[None], faces, texture_size, texture_size
         )['mask'][0].detach().cpu().numpy().astype(np.uint8)
-        cv2.imwrite("123mask.png", mask)
+       
         texture = cv2.inpaint(texture, mask, 3, cv2.INPAINT_TELEA)
-        cv2.imwrite("123n.png", mask)
+        
     else:
         raise ValueError(f'Unknown mode: {mode}')
 
