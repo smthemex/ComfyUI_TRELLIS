@@ -11,7 +11,8 @@ ninja
 plyfile
 diso
 rembg
-onnxruntime-gputrimesh
+onnxruntime-gpu
+trimesh
 xatlas
 pyvista
 pymeshfix
