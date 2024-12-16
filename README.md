@@ -5,9 +5,9 @@
 
 ---
 
-# Notice 注意
-* 只支持安装版的comfyUI，便携包目前测试无法运行（想了不少办法都不行），如果你用的是便携包，请暂时不要安装，秋叶包经网友测试可以正常跑通。
-* Only supports the installation version of ComfyUI. The portable package is currently unable to run during testing (despite trying various methods). If you are using the portable package, please do not install it temporarily
+# Update
+* 增加批量渲染功能，注意过多图片可能会OOM；  
+* Add batch rendering function, be aware that too many images may cause OOM    
 
   
 # 1. Installation
@@ -71,7 +71,8 @@ pip install ./tmp/extensions/vox2seq
 
 ```
 
-**2.3 if use  glb2fbx need ' pip install bpy ' and install blender**
+**2.3 if use  glb2fbx **
+   Need ' pip install bpy ' and install blender  
 
 
 # 3. Models Required 
@@ -115,8 +116,8 @@ if pre download ,fill local path in repo like this: x:/your/path/JeffreyXiang/TR
 
 * opt模式目前有bug，贴图为全黑，fast模式正常使用，here is currently a bug in opt mode, the texture is all black, and fast mode works normally  
 ![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/exmaple.png)
-
-
+![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/batch_example.png
+)
 ---
 
 
