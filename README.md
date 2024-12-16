@@ -37,6 +37,7 @@ xformers and Flash Attention can be installed with only one option
 
 ```
 pip install https://github.com/bdashore3/flash-attention/releases/download/v2.7.1.post1/flash_attn-2.7.1.post1+cu124torch2.5.1cxx11abiFALSE-cp310-cp310-win_amd64.whl
+
 pip install kaolin -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.5.1_cu124.html
 
 git clone https://github.com/NVlabs/nvdiffrast.git ./tmp/extensions/nvdiffrast
@@ -47,6 +48,9 @@ pip install ./tmp/extensions/diffoctreerast
 
 git clone https://github.com/autonomousvision/mip-splatting.git ./tmp/extensions/mip-splatting
 pip install ./tmp/extensions/mip-splatting/submodules/diff-gaussian-rasterization/
+
+pip install spconv-cu120	 #if cuda>120
+# pip install spconv-cu118  # if cuda118 
 
 # 在..ComfyUI_TRELLIS目录下，复制vox2seq插件目录到temp，然后pip安装 Under ComfyUI_TRELLIS directory，Copy the Vox2seq plugin to temp and install it using pip  
 cp -r ./extensions/vox2seq ./tmp/extensions/vox2seq
@@ -59,6 +63,7 @@ pip install ./tmp/extensions/vox2seq
 * [kaolin](https://nvidia-kaolin.s3.us-east-2.amazonaws.com/index.html)   find  wheel，在这里找kaolin的各种版本轮子
 * [flas attention](https://github.com/Dao-AILab/flash-attention/releases/)  find  wheel,在这里找flash attention的各种版本轮子
 * [visualstudio](https://visualstudio.microsoft.com/zh-hans/)   visual studio2019 or high   windows必须安装
+* [spconv](https://github.com/traveller59/spconv)  find your cuda version ,if version.120 use spconv-cu120  cuda版本大于120的只能用spconv-cu120，其他根据对应地址版本安装，注意python版本最高是3.11
 
 **2.2 visualstudio & cuda**
 * 必须将visualstudio的cl.exe加入系统的环境变量path中，以下是windows系统示例，具体以自己的系统目录为准; 
