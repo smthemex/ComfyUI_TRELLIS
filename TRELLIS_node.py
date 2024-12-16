@@ -7,7 +7,7 @@ import torch
 import uuid
 from .app import image_to_3d
 from .trellis.pipelines import TrellisImageTo3DPipeline
-from .utils import tensor_to_pil,glb2obj,obj2fbx
+from .utils import tensor_to_pil,glb2obj,obj2fbx,tensor2imglist
 import folder_paths
 
 MAX_SEED = np.iinfo(np.int32).max
@@ -89,33 +89,60 @@ class Trellis_Sampler:
         }
     
     RETURN_TYPES = ("STRING", )
-    RETURN_NAMES = ("glb_path",)
+    RETURN_NAMES = ("model_path",)
     FUNCTION = "sampler_main"
     CATEGORY = "Trellis"
     
     def sampler_main(self, image, model,  seed, cfg, steps,slat_cfg, slat_steps,preprocess_image,texture_size,mesh_simplify,mode,covert2video,glb2obj,glb2fbx):
 
-        model.cuda()
-        image = tensor_to_pil(image) #pil
+        
+        
+        #image = tensor_to_pil(image) #pil
+        image_list=tensor2imglist(image) #pil_list
         trial_id = str(uuid.uuid4())
-        glb=image_to_3d(model,image,preprocess_image,covert2video,trial_id,seed,cfg,steps,slat_cfg,slat_steps,mesh_simplify,texture_size,mode)
-        glb_path = f"{folder_paths.get_output_directory()}/{trial_id}.glb"
-        glb.export(glb_path)
-        print(f"glb save in {glb_path} ")
-        #model.cpu()
-        #gc.collect()
-        torch.cuda.empty_cache()
+       
+        output_path = []
+        for i,img in enumerate(image_list):
+            model.cuda()
+            glb=image_to_3d(model,img,preprocess_image,covert2video,trial_id,seed,cfg,steps,slat_cfg,slat_steps,mesh_simplify,texture_size,mode)
+            glb_path = f"{folder_paths.get_output_directory()}/{trial_id}_{i}.glb"
+            glb.export(glb_path)
+            output_path.append(glb_path)
+            model.cpu()
+            gc.collect()
+            torch.cuda.empty_cache()
+            print(f"glb save in {glb_path} ")
+
         if glb2obj:
-            obj_path=f"{folder_paths.get_output_directory()}/{trial_id}.obj"
-            glb2obj(glb_path, obj_path)
-            glb_path=obj_path
-        if glb2fbx:
-            obj_path = f"{folder_paths.get_output_directory()}/{trial_id}.obj"
-            glb2obj(glb_path, obj_path)
-            fbx_path = f"{folder_paths.get_output_directory()}/{trial_id}.fbx"
-            obj2fbx(obj_path,fbx_path)
-            glb_path = fbx_path
-        return (glb_path,)
+            obj_paths=[]
+            for path in output_path:
+                obj_path=os.path.join(os.path.split(path)[0],os.path.split(path)[1].replace(".glb",".obj"))
+                glb2obj(path, obj_path)
+                obj_paths.append(obj_path)
+            if glb2fbx:
+                fbx_paths=[]
+                for i in obj_paths:
+                    fbx_path = os.path.join(os.path.split(i)[0], os.path.split(i)[1].replace(".obj", ".fbx"))
+                    obj2fbx(i, fbx_path)
+                    fbx_paths.append(fbx_path)
+                output_path=fbx_paths
+            else:
+                output_path=obj_paths
+        else:
+            if glb2fbx:
+                obj_paths = []
+                fbx_paths = []
+                for path in output_path:
+                    obj_path = os.path.join(os.path.split(path)[0], os.path.split(path)[1].replace(".glb", ".obj"))
+                    glb2obj(path, obj_path)
+                    obj_paths.append(obj_path)
+                for i in obj_paths:
+                    fbx_path = os.path.join(os.path.split(i)[0], os.path.split(i)[1].replace(".obj", ".fbx"))
+                    obj2fbx(i, fbx_path)
+                    fbx_paths.append(fbx_path)
+                output_path = obj_paths
+        model_path = '\n'.join(output_path)
+        return (model_path,)
 
 
 NODE_CLASS_MAPPINGS = {
