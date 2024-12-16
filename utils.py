@@ -238,6 +238,15 @@ def tensor2pil(tensor):
     image = Image.fromarray(image_np, mode='RGB')
     return image
 
+def tensor2imglist(image):# pil
+    B, _, _, _ = image.size()
+    if B == 1:
+        list_out = [tensor2pil(image)]
+    else:
+        image_list = torch.chunk(image, chunks=B)
+        list_out = [tensor2pil(i) for i in image_list]
+    return list_out
+
 
 def cf_tensor2cv(tensor,width, height):
     d1, _, _, _ = tensor.size()
