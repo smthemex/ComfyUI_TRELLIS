@@ -42,6 +42,7 @@ pip install kaolin -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.5
 
 git clone https://github.com/NVlabs/nvdiffrast.git ./tmp/extensions/nvdiffrast
 pip install ./tmp/extensions/nvdiffrast
+#if install nvdiffrast error ，see below how to fix it 
 
 git clone --recurse-submodules https://github.com/JeffreyXiang/diffoctreerast.git ./tmp/extensions/diffoctreerast
 pip install ./tmp/extensions/diffoctreerast
@@ -63,7 +64,9 @@ pip install ./tmp/extensions/vox2seq
 * [kaolin](https://nvidia-kaolin.s3.us-east-2.amazonaws.com/index.html)   find  wheel，在这里找kaolin的各种版本轮子
 * [flas attention](https://github.com/Dao-AILab/flash-attention/releases/)  find  wheel,在这里找flash attention的各种版本轮子
 * [visualstudio](https://visualstudio.microsoft.com/zh-hans/)   visual studio2019 or high   windows必须安装
-* [spconv](https://github.com/traveller59/spconv)  find your cuda version ,if version.120 use spconv-cu120  cuda版本大于120的只能用spconv-cu120，其他根据对应地址版本安装，注意python版本最高是3.11
+* [spconv](https://github.com/traveller59/spconv)  find your cuda version ,if version.120 use spconv-cu120  cuda版本大于120的只能用spconv-cu120，其他根据对应地址版本安装
+* if somebody install nvdiffrast fail can see how to  fix it  in [here  ](https://www.bilibili.com/video/BV1PMkEYzE8h/?vd_source=602446aa977e356a8a57180ba0877271)
+* if install utils3d fail can see how to fix it in [here](https://github.com/smthemex/ComfyUI_TRELLIS/issues/6) @planb788
 
 **2.2 visualstudio & cuda**
 * 必须将visualstudio的cl.exe加入系统的环境变量path中，以下是windows系统示例，具体以自己的系统目录为准; 
