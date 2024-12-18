@@ -13,7 +13,7 @@ from comfy.utils import common_upscale,ProgressBar
 import folder_paths
 
 #https://github.com/Abecid/realtime-3d-stylization-drawing/blob/97a687f148cec04e107f7fec8986c8b5615af1ec/gradio_app.py#L33
-def glb2obj(glb_path, obj_path):
+def glb2obj_(glb_path, obj_path):
     print('Converting glb to obj')
     mesh = trimesh.load(glb_path)
     
@@ -34,7 +34,7 @@ def glb2obj(glb_path, obj_path):
     print('Convert Done')
 
 #https://github.com/robotflow-initiative/model_format_converter/blob/8f45efcfbec22444869548b369f7f77cdf9b04e4/model_format_converter/blender_scripts/obj2fbx.py#L6
-def obj2fbx(obj_path, fbx_path):
+def obj2fbx_(obj_path, fbx_path):
     # print all objects
     #for obj in bpy.data.objects:
     #    print(obj.name)
