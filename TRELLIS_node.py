@@ -7,7 +7,7 @@ import torch
 import uuid
 from .app import image_to_3d
 from .trellis.pipelines import TrellisImageTo3DPipeline
-from .utils import tensor_to_pil,glb2obj,obj2fbx,tensor2imglist
+from .utils import tensor_to_pil,glb2obj_,obj2fbx_,tensor2imglist
 import folder_paths
 
 MAX_SEED = np.iinfo(np.int32).max
@@ -117,13 +117,13 @@ class Trellis_Sampler:
             obj_paths=[]
             for path in output_path:
                 obj_path=os.path.join(os.path.split(path)[0],os.path.split(path)[1].replace(".glb",".obj"))
-                glb2obj(path, obj_path)
+                glb2obj_(path, obj_path)
                 obj_paths.append(obj_path)
             if glb2fbx:
                 fbx_paths=[]
                 for i in obj_paths:
                     fbx_path = os.path.join(os.path.split(i)[0], os.path.split(i)[1].replace(".obj", ".fbx"))
-                    obj2fbx(i, fbx_path)
+                    obj2fbx_(i, fbx_path)
                     fbx_paths.append(fbx_path)
                 output_path=fbx_paths
             else:
@@ -134,11 +134,11 @@ class Trellis_Sampler:
                 fbx_paths = []
                 for path in output_path:
                     obj_path = os.path.join(os.path.split(path)[0], os.path.split(path)[1].replace(".glb", ".obj"))
-                    glb2obj(path, obj_path)
+                    glb2obj_(path, obj_path)
                     obj_paths.append(obj_path)
                 for i in obj_paths:
                     fbx_path = os.path.join(os.path.split(i)[0], os.path.split(i)[1].replace(".obj", ".fbx"))
-                    obj2fbx(i, fbx_path)
+                    obj2fbx_(i, fbx_path)
                     fbx_paths.append(fbx_path)
                 output_path = obj_paths
         model_path = '\n'.join(output_path)
