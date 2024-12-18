@@ -6,6 +6,8 @@
 ---
 
 # Update
+* 使用 [here](https://github.com/smthemex/ComfyUI_TRELLIS/issues/6) @planb788 方法，我制作了python3.11，torch2.5.1 cu124.的便携包，可以在[Google dirver](https://drive.google.com/file/d/174StpwP3D1qSD0RuhM1XwTene-5VMiL4/view?usp=drive_link)  或者 [夸克网盘](https://pan.quark.cn/s/8e07717bdff7)下载，注意，即便是便携包，也是需要配置VS和python的系统变量路径的；
+*  Use [here](https://github.com/smthemex/ComfyUI_TRELLIS/issues/6) , I have created a portable package for ‘Python 3.11, Torch 2.5.1, and CU124’ using the @planb788 method, which can be found on [Google dirver](https://drive.google.com/file/d/174StpwP3D1qSD0RuhM1XwTene-5VMiL4/view?usp=drive_link) Or [夸克网盘](https://pan.quark.cn/s/8e07717bdff7) Download, note that even portable packages require configuring the system variable paths for VS and Python;
 * 增加批量渲染功能，注意过多图片可能会OOM；  
 * Add batch rendering function, be aware that too many images may cause OOM    
 
