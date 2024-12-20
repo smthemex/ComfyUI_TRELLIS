@@ -7,7 +7,7 @@ import torch
 import uuid
 from .app import image_to_3d
 from .trellis.pipelines import TrellisImageTo3DPipeline
-from .utils import tensor_to_pil,glb2obj_,obj2fbx_,tensor2imglist
+from .utils import glb2obj_,obj2fbx_,tensor2imglist,pre_img
 import folder_paths
 
 MAX_SEED = np.iinfo(np.int32).max
@@ -82,6 +82,9 @@ class Trellis_Sampler:
                 "texture_size": ("INT", {"default": 512, "min": 512, "max": 2048, "step": 512, "display": "number"}),
                 "mesh_simplify": ("FLOAT", {"default": 0.95, "min": 0.0, "max": 0.98, "step": 0.01}),
                 "mode":(["fast","opt"],),
+                "multi_image": ("BOOLEAN", {"default": False},),
+                "multiimage_algo":(["multidiffusion", "stochastic"],),
+                "gaussians2ply": ("BOOLEAN", {"default": False},),
                 "covert2video": ("BOOLEAN", {"default": False},),
                 "glb2obj": ("BOOLEAN", {"default": False},),
                 "glb2fbx": ("BOOLEAN", {"default": False},),
@@ -93,18 +96,22 @@ class Trellis_Sampler:
     FUNCTION = "sampler_main"
     CATEGORY = "Trellis"
     
-    def sampler_main(self, image, model,  seed, cfg, steps,slat_cfg, slat_steps,preprocess_image,texture_size,mesh_simplify,mode,covert2video,glb2obj,glb2fbx):
-
-        
-        
-        #image = tensor_to_pil(image) #pil
-        image_list=tensor2imglist(image) #pil_list
+    def sampler_main(self, image, model,  seed, cfg, steps,slat_cfg, slat_steps,preprocess_image,texture_size,mesh_simplify,mode,multi_image,multiimage_algo,gaussians2ply,covert2video,glb2obj,glb2fbx):
+ 
+        image_list,image_batch=tensor2imglist(image) #pil_list,batch
+       
+        if multi_image and image_batch % 3 == 0:
+            print("********infer multi image,like Three views ******")
+            image_list=[image_list[i:i + 3] for i in range(0, len(image_list), 3)] #三等分列表
+            is_multiimage=True
+        else:
+            is_multiimage = False
         trial_id = str(uuid.uuid4())
        
         output_path = []
         for i,img in enumerate(image_list):
             model.cuda()
-            glb=image_to_3d(model,img,preprocess_image,covert2video,trial_id,seed,cfg,steps,slat_cfg,slat_steps,mesh_simplify,texture_size,mode)
+            glb=image_to_3d(model,img,preprocess_image,covert2video,trial_id,seed,cfg,steps,slat_cfg,slat_steps,mesh_simplify,texture_size,mode,is_multiimage,gaussians2ply,multiimage_algo)
             glb_path = f"{folder_paths.get_output_directory()}/{trial_id}_{i}.glb"
             glb.export(glb_path)
             output_path.append(glb_path)
@@ -144,14 +151,56 @@ class Trellis_Sampler:
         model_path = '\n'.join(output_path)
         return (model_path,)
 
+class Trellis_multiimage_loader:
+    
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"image_a": ("IMAGE",),
+                             },
+                "optional": {"image_b": ("IMAGE",),
+                             "image_c": ("IMAGE",),}
+                }
+    
+    RETURN_TYPES = ("IMAGE",)
+    ETURN_NAMES = ("image",)
+    FUNCTION = "main_batch"
+    CATEGORY = "Trellis"
+    
+    def main_batch(self, image_a, **kwargs):
+        image_b = kwargs.get("image_b")
+        image_c = kwargs.get("image_c")
+        _,height_a,_,_ = image_a.shape
+        if isinstance(image_b, torch.Tensor) and isinstance(image_c, torch.Tensor):
+            _, height_b, _, _ = image_b.shape
+            _, height_c, _, _ = image_c.shape
+            height = max(height_a, height_b, height_c)
+            img_list=[pre_img(image_a, height),pre_img(image_b, height),pre_img(image_c, height)]
+            image = torch.cat(img_list, dim=0)
+        elif isinstance(image_b, torch.Tensor) and not isinstance(image_c, torch.Tensor):
+            _, height_b, _, _ = image_b.shape
+            height = max(height_a, height_b,)
+            img_list = [pre_img(image_a, height), pre_img(image_b, height)]
+            image = torch.cat(img_list, dim=0)
+        elif not isinstance(image_b, torch.Tensor) and isinstance(image_c, torch.Tensor):
+            _, height_c, _, _ = image_c.shape
+            height = max(height_a, height_c, )
+            img_list = [pre_img(image_a, height), pre_img(image_b, height)]
+            image = torch.cat(img_list, dim=0)
+        else:
+            image=image_a
+    
+        return (image,)
+
 
 NODE_CLASS_MAPPINGS = {
     "Trellis_LoadModel": Trellis_LoadModel,
     "Trellis_Sampler": Trellis_Sampler,
-
+    "Trellis_multiimage_loader":Trellis_multiimage_loader
+    
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Trellis_LoadModel": "Trellis_LoadModel",
     "Trellis_Sampler": "Trellis_Sampler",
-
+    "Trellis_multiimage_loader":"Trellis_multiimage_loader"
 }
+
