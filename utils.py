@@ -171,8 +171,9 @@ def cvargb2tensor(img):
 def cv2tensor(img):
     assert type(img) == np.ndarray, 'the img type is {}, but ndarry expected'.format(type(img))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = torch.from_numpy(img.transpose((2, 0, 1)))
+    img = torch.from_numpy(img)
     return img.float().div(255).unsqueeze(0)  # 255也可以改为256
+
 
 def images_generator(img_list: list,):
     #get img size
@@ -241,12 +242,21 @@ def tensor2pil(tensor):
 def tensor2imglist(image):# pil
     B, _, _, _ = image.size()
     if B == 1:
-        list_out = [tensor2pil(image)]
+        list_out = [tensor2pil_preprocess(image)]
     else:
         image_list = torch.chunk(image, chunks=B)
-        list_out = [tensor2pil(i) for i in image_list]
-    return list_out
+        list_out = [tensor2pil_preprocess(i) for i in image_list]
+    return list_out,B
 
+def tensor2pil_preprocess(image):
+    cv_image = tensor2cv(image)
+    cv_image = center_resize_pad(cv_image, 512, 512)
+    img=cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+    iamge_pil=Image.fromarray(img)
+    import datetime
+    timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    iamge_pil.save(f"{timestamp}_b.png")
+    return  iamge_pil
 
 def cf_tensor2cv(tensor,width, height):
     d1, _, _, _ = tensor.size()
@@ -257,3 +267,40 @@ def cf_tensor2cv(tensor,width, height):
     cv_img=tensor2cv(cr_tensor)
     return cv_img
 
+def pre_img(tensor,max):
+    cv_image = tensor2cv(tensor) #转CV
+    h, w = cv_image.shape[:2]
+    cv_image = center_resize_pad(cv_image, h, h) #以高度中心裁切或填充
+    cv_image=cv2.resize(cv_image, (max, max)) #缩放到统一高度
+    return  cv2tensor(cv_image)
+
+def center_resize_pad(img, new_width, new_height):#模型尺寸推荐518
+    h, w = img.shape[:2]
+    if w == h:
+        if w == new_width:
+            return img
+        else:
+            return cv2.resize(img, (new_width, new_height))
+    else: #蒙版也有可能不是正方形
+        if h > w:  # 竖直图左右填充
+            s = max(h, w)
+            f = np.zeros((s, s, 3), np.uint8)
+            ax, ay = (s - img.shape[1]) // 2, (s - img.shape[0]) // 2
+            f[ay:img.shape[0] + ay, ax:ax + img.shape[1]] = img
+        else:
+            f = center_crop(img, h, h)
+        return cv2.resize(f, (new_width, new_height))
+
+
+def center_crop(image, crop_width, crop_height):
+    # 获取图像的中心坐标
+    height, width = image.shape[:2]
+    x = width // 2 - crop_width // 2
+    y = height // 2 - crop_height // 2
+    
+    x=max(0,x)
+    y=max(0,y)
+    
+    # 裁剪图像
+    crop_img = image[y:y + crop_height, x:x + crop_width]
+    return crop_img
