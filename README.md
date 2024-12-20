@@ -7,9 +7,9 @@
 
 # Update
 * 2024 /12 /20
-* 根据TRELLIS的更新，新增三视参考图渲染模式（示例图为实际效果，此模式速度更快）和高斯保存按钮，针对三视参考图新增图片加载节点（内置正方形裁切）；
+* 根据TRELLIS的更新，新增三视参考图渲染模式（示例图为实际效果，此模式速度更快）和高斯保存按钮，针对三视参考图新增图片加载节点（内置正方形裁切),三视图模式开启multi_image生效，否则是常规的单图模式（会输出三个结果）；
 * 如果你输入的图片不是纯色背景，建议开启preprocess_image以获得最好的效果。（此次更新也修复了加载RGBA图片可能导致的变形错误）； 
-* According to TRELLIS' update, a three view reference image rendering mode (the example image is the actual effect, which is faster) and a Gaussian save button have been added. For the three view reference image, a new image loading node (with built-in square cropping) has been added;
+* According to TRELLIS' update, a three view reference image rendering mode (the example image is the actual effect, which is faster) and a Gaussian save button have been added. For the three view reference image, a new image loading node (with built-in square cropping) has been added,Enabling multi_image in three view mode takes effect, otherwise it will be in regular single image mode (outputting three results);
 * If the image you input is not a solid color background, it is recommended to enable 'preprocess_image' for the best effect. (This update also fixes deformation errors that may occur when loading RGBA images);
 
 
