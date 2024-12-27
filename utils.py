@@ -253,9 +253,9 @@ def tensor2pil_preprocess(image):
     cv_image = center_resize_pad(cv_image, 512, 512)
     img=cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
     iamge_pil=Image.fromarray(img)
-    import datetime
-    timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    iamge_pil.save(f"{timestamp}_b.png")
+    # import datetime
+    # timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    # iamge_pil.save(f"{timestamp}_b.png")
     return  iamge_pil
 
 def cf_tensor2cv(tensor,width, height):
