@@ -5,16 +5,16 @@
 
 ---
 
-# Update
-* 2024 /12 /20
+# Update 
+* 2024/12/27
+* Fix opt mode's error(got black mesh);   
+* 修复opt模式mesh为黑的错误（未开启禁用梯度计算的缘故）  
+
+**previous update**
 * 根据TRELLIS的更新，新增三视参考图渲染模式（示例图为实际效果，此模式速度更快）和高斯保存按钮，针对三视参考图新增图片加载节点（内置正方形裁切),三视图模式开启multi_image生效，否则是常规的单图模式（会输出三个结果）；
 * 如果你输入的图片不是纯色背景，建议开启preprocess_image以获得最好的效果。（此次更新也修复了加载RGBA图片可能导致的变形错误）； 
 * According to TRELLIS' update, a three view reference image rendering mode (the example image is the actual effect, which is faster) and a Gaussian save button have been added. For the three view reference image, a new image loading node (with built-in square cropping) has been added,Enabling multi_image in three view mode takes effect, otherwise it will be in regular single image mode (outputting three results);
 * If the image you input is not a solid color background, it is recommended to enable 'preprocess_image' for the best effect. (This update also fixes deformation errors that may occur when loading RGBA images);
-
-
-
-**previous update**
 * 使用 [here](https://github.com/smthemex/ComfyUI_TRELLIS/issues/6) @planb788 方法，我制作了python3.11，torch2.5.1 cu124.的便携包，可以在[Google dirver](https://drive.google.com/file/d/174StpwP3D1qSD0RuhM1XwTene-5VMiL4/view?usp=drive_link)  或者 [夸克网盘](https://pan.quark.cn/s/8e07717bdff7)下载，注意，即便是便携包，也是需要配置VS和python的系统变量路径的；
 *  Use [here](https://github.com/smthemex/ComfyUI_TRELLIS/issues/6) , I have created a portable package for ‘Python 3.11, Torch 2.5.1, and CU124’ using the @planb788 method, which can be found on [Google dirver](https://drive.google.com/file/d/174StpwP3D1qSD0RuhM1XwTene-5VMiL4/view?usp=drive_link) Or [夸克网盘](https://pan.quark.cn/s/8e07717bdff7) Download, note that even portable packages require configuring the system variable paths for VS and Python;
 * 增加批量渲染功能，注意过多图片可能会OOM；  
