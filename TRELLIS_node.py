@@ -1,12 +1,15 @@
 # !/usr/bin/env python
+
 # -*- coding: UTF-8 -*-
 import numpy as np
 import gc
 import os
 import torch
 import uuid
-from .app import image_to_3d
-from .trellis.pipelines import TrellisImageTo3DPipeline
+
+
+from .app import image_to_3d,prepare_output
+from .trellis.pipelines import TrellisImageTo3DPipeline,TrellisTextTo3DPipeline
 from .utils import glb2obj_,obj2fbx_,tensor2imglist,pre_img
 import folder_paths
 
@@ -32,7 +35,7 @@ class Trellis_LoadModel:
         return {
             "required": {
                 "repo": ("STRING", {"default": "JeffreyXiang/TRELLIS-image-large"}),
-                "dino": (["none"] + folder_paths.get_filename_list("dinov2"),),
+                "dino_clip": (["none"] + folder_paths.get_filename_list("dinov2")+folder_paths.get_filename_list("clip"),),
                 "attn_backend":(["xformers","flash-attn"],),
                 "spconv_algo":(["auto","flash-native"],),
             }
@@ -43,7 +46,7 @@ class Trellis_LoadModel:
     FUNCTION = "main_loader"
     CATEGORY = "Trellis"
     
-    def main_loader(self, repo,dino,attn_backend,spconv_algo):
+    def main_loader(self, repo,dino_clip,attn_backend,spconv_algo):
         if attn_backend=="xformers":
             os.environ['ATTN_BACKEND'] = 'xformers'
         else:
@@ -52,17 +55,33 @@ class Trellis_LoadModel:
             os.environ['SPCONV_ALGO'] = 'auto'
         else:
             os.environ['SPCONV_ALGO'] = 'native'
-        
-        if dino=="none":
-            raise "need choice dinov2 checkpoint"
-        
-        TrellisImageTo3DPipeline.dino=folder_paths.get_full_path("dinov2", dino)
-        TrellisImageTo3DPipeline.dino_moudel=os.path.join(current_path,"facebookresearch/dinov2")
         if repo:
-            model=TrellisImageTo3DPipeline.from_pretrained(repo)
+            infer_mode="txt" if "text" in repo else "img" 
         else:
             raise "need fill repo"
-        return (model,)
+        
+        if dino_clip=="none" :
+            raise "image mode need choice dinov2 or clip checkpoint"
+        
+        if dino_clip!="none" :
+            if infer_mode=="img":
+                TrellisImageTo3DPipeline.dino=folder_paths.get_full_path("dinov2", dino_clip)
+                TrellisImageTo3DPipeline.dino_moudel=os.path.join(current_path,"facebookresearch/dinov2")
+            else:
+                TrellisTextTo3DPipeline.clip=folder_paths.get_full_path("clip", dino_clip)
+                TrellisTextTo3DPipeline.clip_moudel=os.path.join(current_path,"clip")
+        
+
+        if repo:
+            infer_mode="txt" if "text" in repo else "img" 
+            if infer_mode=="img":
+                model=TrellisImageTo3DPipeline.from_pretrained(repo)
+            else:
+                model=TrellisTextTo3DPipeline.from_pretrained(repo)
+       
+        
+       
+        return ({"model": model,"infer_mode":infer_mode},)
 
 
 class Trellis_Sampler:
@@ -71,8 +90,9 @@ class Trellis_Sampler:
         
         return {
             "required": {
-                "image": ("IMAGE",),  # [B,H,W,C], C=3
                 "model": ("MODEL_TRELLIS",),
+                "prompt": ("STRING", {"multiline": True,"default":"Rugged, metallic texture with orange and white paint finish, suggesting a durable, industrial feel."}),
+                "mesh_path": ("STRING", {"default":"",}),
                 "seed": ("INT", {"default": 0, "min": 0, "max": MAX_SEED}),
                 "cfg": ("FLOAT", {"default": 7.5, "min": 0.0, "max": 10.0, "step": 0.1, "round": 0.01}),
                 "steps": ("INT", {"default": 12, "min": 1, "max": 50}),
@@ -87,8 +107,10 @@ class Trellis_Sampler:
                 "gaussians2ply": ("BOOLEAN", {"default": False},),
                 "covert2video": ("BOOLEAN", {"default": False},),
                 "glb2obj": ("BOOLEAN", {"default": False},),
-                "glb2fbx": ("BOOLEAN", {"default": False},),
-            }
+                "glb2fbx": ("BOOLEAN", {"default": False},), },
+            "optional":{ "image": ("IMAGE",),  # [B,H,W,C], C=3
+                            }
+           
         }
     
     RETURN_TYPES = ("STRING", )
@@ -96,30 +118,79 @@ class Trellis_Sampler:
     FUNCTION = "sampler_main"
     CATEGORY = "Trellis"
     
-    def sampler_main(self, image, model,  seed, cfg, steps,slat_cfg, slat_steps,preprocess_image,texture_size,mesh_simplify,mode,multi_image,multiimage_algo,gaussians2ply,covert2video,glb2obj,glb2fbx):
- 
-        image_list,image_batch=tensor2imglist(image) #pil_list,batch
-       
-        if multi_image and image_batch % 3 == 0:
-            print("********infer multi image,like Three views ******")
-            image_list=[image_list[i:i + 3] for i in range(0, len(image_list), 3)] #三等分列表
-            is_multiimage=True
-        else:
-            is_multiimage = False
-        trial_id = str(uuid.uuid4())
-       
-        output_path = []
-        for i,img in enumerate(image_list):
-            model.cuda()
-            glb=image_to_3d(model,img,preprocess_image,covert2video,trial_id,seed,cfg,steps,slat_cfg,slat_steps,mesh_simplify,texture_size,mode,is_multiimage,gaussians2ply,multiimage_algo)
-            glb_path = f"{folder_paths.get_output_directory()}/{trial_id}_{i}.glb"
-            glb.export(glb_path)
-            output_path.append(glb_path)
-            model.cpu()
-            gc.collect()
-            torch.cuda.empty_cache()
-            print(f"glb save in {glb_path} ")
+    def sampler_main(self,  model,prompt, mesh_path, seed, cfg, steps,slat_cfg, slat_steps,preprocess_image,texture_size,mesh_simplify,mode,multi_image,multiimage_algo,gaussians2ply,covert2video,glb2obj,glb2fbx,**kwargs):
 
+        infer_mode=model.get("infer_mode")
+        model=model.get("model")
+        
+        if kwargs.get("image") is None and infer_mode=="img":
+            raise "when use img mode,need link a  image"
+        
+        if isinstance(kwargs.get("image"),torch.Tensor): 
+            image_list,image_batch=tensor2imglist(kwargs.get("image")) #pil_list,batch
+       
+            if multi_image and image_batch % 3 == 0:
+                print("********infer multi image,like Three views ******")
+                image_list=[image_list[i:i + 3] for i in range(0, len(image_list), 3)] #三等分列表
+                is_multiimage=True
+            else:
+                is_multiimage = False
+        else:
+            image_list,is_multiimage=None,False
+
+        trial_id = str(uuid.uuid4())
+        
+        if infer_mode=="img":
+            output_path = []
+            for i,img in enumerate(image_list):
+                model.cuda()
+                glb_path=image_to_3d(model,img,preprocess_image,covert2video,trial_id,seed,cfg,steps,slat_cfg,slat_steps,mesh_simplify,texture_size,mode,is_multiimage,gaussians2ply,multiimage_algo)
+                output_path.append(glb_path)
+               
+        else:
+            model.cuda()
+            if mesh_path:
+                if not mesh_path.endswith(".ply"):
+                    raise "mesh_path must be .ply format"
+                import open3d as o3d
+                
+                base_mesh = o3d.io.read_triangle_mesh(mesh_path)
+                outputs = model.run_variant(
+                        base_mesh,
+                        prompt=prompt,
+                        seed=1,
+                        # Optional parameters
+                        slat_sampler_params={
+                            "steps": slat_steps,
+                            "cfg_strength": slat_cfg,
+                        },
+                    )
+                
+                # outputs is a dictionary containing generated 3D assets in different formats:
+                # - outputs['gaussian']: a list of 3D Gaussians
+                # - outputs['radiance_field']: a list of radiance fields
+                # - outputs['mesh']: a list of meshes
+
+            else:
+                 outputs = model.run(
+                    prompt,
+                    seed=seed,
+                    formats=["gaussian", "mesh"],
+                    sparse_structure_sampler_params={
+                        "steps": steps,
+                        "cfg_strength": cfg,
+                    },
+                    slat_sampler_params={
+                        "steps": slat_steps,
+                        "cfg_strength": slat_cfg,
+                    },
+                )
+            output_path=prepare_output(outputs,covert2video,trial_id,False,gaussians2ply,mesh_simplify,texture_size,mode)
+            output_path=[output_path]
+        model.cpu()
+        gc.collect()
+        torch.cuda.empty_cache()
+        
         if glb2obj:
             obj_paths=[]
             for path in output_path:

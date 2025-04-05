@@ -3,21 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-DEFAULT_TRIVEC_CONFIG = {
-    'dim': 8,
-    'rank': 8,
-}
-
-DEFAULT_VOXEL_CONFIG = {
-    'solid': False,
-}
-
-DEFAULT_DECOPOLY_CONFIG = {
-    'degree': 8,
-    'rank': 16,
-}
-
-
 class DfsOctree:
     """
     Sparse Voxel Octree (SVO) implementation for PyTorch.
@@ -145,8 +130,8 @@ class DfsOctree:
 
     @property
     def get_density(self):
-        if self.primitive == 'voxel' and self.voxel_config['solid']:
-            return torch.full((self.position.shape[0], 1), 1000, dtype=torch.float32, device=self.device)
+        if self.primitive == 'voxel' and self.primitive_config.get('solid', False):
+            return torch.full((self.position.shape[0], 1), torch.finfo(torch.float32).max, dtype=torch.float32, device=self.device)
         return self.density_activation(self.density)
     
     @property
@@ -172,7 +157,7 @@ class DfsOctree:
         return torch.cat([self.features_dc, self.features_ac], dim=-2)
 
     def state_dict(self):
-        ret = {'structure': self.structure, 'position': self.position, 'depth': self.depth, 'sh_degree': self.sh_degree, 'active_sh_degree': self.active_sh_degree, 'trivec_config': self.trivec_config, 'voxel_config': self.voxel_config, 'primitive': self.primitive}
+        ret = {'structure': self.structure, 'position': self.position, 'depth': self.depth, 'sh_degree': self.sh_degree, 'active_sh_degree': self.active_sh_degree, 'primitive_config': self.primitive_config, 'primitive': self.primitive}
         if hasattr(self, 'density_shift'):
             ret['density_shift'] = self.density_shift
         for data in set(self.data + self.param_names):

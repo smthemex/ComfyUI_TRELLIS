@@ -5,8 +5,9 @@
 
 ---
 
-# Update  
-* 2025/03/27 kaolin support torch2.6 now;    
+# Update 2025/04/5  
+*  support txt to 3D and meshto3D
+* kaolin support torch2.6 now;    
 
   
 # 1. Installation
@@ -19,8 +20,8 @@ git clone https://github.com/smthemex/ComfyUI_TRELLIS.git
 ---
 
 # 2. Requirements  
-本插件的测试环境是python3.11，torch2.5.1 cu124...       
-The testing environment for this node is Python 3.11, torch2.5.1 cu124...    
+本插件的测试环境是python3.11，torch2.6 cu126...       
+The testing environment for this node is Python 3.11, torch2.6 cu126...    
 
 ```
 pip install -r requirements.txt
@@ -113,33 +114,23 @@ if pre download ,fill local path in repo like this: x:/your/path/JeffreyXiang/TR
 |            ├── ss_flow_img_dit_L_16l8_fp16.json
 |            ├── ss_flow_img_dit_L_16l8_fp16.safetensors
 ```
-* 3.2 dinov2  
-因为官方的代码每次加载dinov2都要连GitHub，所以我改成了离线版的，需要下载dinov2模型，[地址](https://dl.fbaipublicfiles.com/dinov2/dinov2_vitl14/dinov2_vitl14_reg4_pretrain.pth) 
-模型放在comfyUI/models/dinov2目录下
+* 3.2 dinov2  and clip
+因为官方的代码每次加载dinov2都要连GitHub，所以我改成了离线版的，需要下载dinov2模型，[地址](https://dl.fbaipublicfiles.com/dinov2/dinov2_vitl14/dinov2_vitl14_reg4_pretrain.pth) ,clip是常规的openai/clip-vit-large-patch14 模型，也为方便大陆用户改成了离线版
+模型放在comfyUI/models/dinov2和clip目录下
 ```
 ├── ComfyUI/models/dinov2
 |      ├── dinov2_vitl14_reg4_pretrain.pth
+├── ComfyUI/models/clip
+|      ├── clip_l.safetensors
 ```
 
 ---
 
 # 4 Example
-
-![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/example1220.png)
-![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/exmaple.png)
-![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/batch_example.png
-)
+* img to 3D or txt to 3D
+![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/assets.png)
 
 
-**previous update**
-* 根据TRELLIS的更新，新增三视参考图渲染模式（示例图为实际效果，此模式速度更快）和高斯保存按钮，针对三视参考图新增图片加载节点（内置正方形裁切),三视图模式开启multi_image生效，否则是常规的单图模式（会输出三个结果）；
-* 如果你输入的图片不是纯色背景，建议开启preprocess_image以获得最好的效果。（此次更新也修复了加载RGBA图片可能导致的变形错误）；
-*  使用 [here](https://github.com/smthemex/ComfyUI_TRELLIS/issues/6) @planb788 方法，我制作了python3.11，torch2.5.1 cu124.的便携包，可以在[Google dirver](https://drive.google.com/file/d/174StpwP3D1qSD0RuhM1XwTene-5VMiL4/view?usp=drive_link)  或者 [夸克网盘](https://pan.quark.cn/s/8e07717bdff7)下载，注意，即便是便携包，也是需要配置VS和python的系统变量路径的；
-* 增加批量渲染功能，注意过多图片可能会OOM；  
-* According to TRELLIS' update, a three view reference image rendering mode (the example image is the actual effect, which is faster) and a Gaussian save button have been added. For the three view reference image, a new image loading node (with built-in square cropping) has been added,Enabling multi_image in three view mode takes effect, otherwise it will be in regular single image mode (outputting three results);
-* If the image you input is not a solid color background, it is recommended to enable 'preprocess_image' for the best effect. (This update also fixes deformation errors that may occur when loading RGBA images);
-*  Use [here](https://github.com/smthemex/ComfyUI_TRELLIS/issues/6) , I have created a portable package for ‘Python 3.11, Torch 2.5.1, and CU124’ using the @planb788 method, which can be found on [Google dirver](https://drive.google.com/file/d/174StpwP3D1qSD0RuhM1XwTene-5VMiL4/view?usp=drive_link) Or [夸克网盘](https://pan.quark.cn/s/8e07717bdff7) Download, note that even portable packages require configuring the system variable paths for VS and Python;
-* Add batch rendering function, be aware that too many images may cause OOM    
 
 # 5 Citation
 

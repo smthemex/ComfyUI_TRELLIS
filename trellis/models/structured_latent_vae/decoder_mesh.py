@@ -8,6 +8,7 @@ from ...modules import sparse as sp
 from .base import SparseTransformerBase
 from ...representations import MeshExtractResult
 from ...representations.mesh import SparseFeatures2Mesh
+from ..sparse_elastic_mixin import SparseTransformerElasticMixin
 
 
 class SparseSubdivideBlock3d(nn.Module):
@@ -165,3 +166,11 @@ class SLatMeshDecoder(SparseTransformerBase):
         h = h.type(x.dtype)
         h = self.out_layer(h)
         return self.to_representation(h)
+    
+
+class ElasticSLatMeshDecoder(SparseTransformerElasticMixin, SLatMeshDecoder):
+    """
+    Slat VAE Mesh decoder with elastic memory management.
+    Used for training with low VRAM.
+    """
+    pass
