@@ -13,37 +13,7 @@ from comfy.utils import common_upscale,ProgressBar
 import folder_paths
 current_path = os.path.dirname(os.path.abspath(__file__))
 
-def convert_clip2diffuser(clip):
-   
-    from transformers import (
-            CLIPTextModel,
-            CLIPTextConfig,
-                                            )
-    from contextlib import nullcontext
 
-    try:
-        from accelerate import init_empty_weights
-        from accelerate.utils import set_module_tensor_to_device
-        is_accelerate_available = True
-    except:
-        pass
-    
-    import comfy.model_management as mm
-   
-    offload_device=mm.unet_offload_device()
-   
-    text_encoder_config=CLIPTextConfig.from_pretrained(os.path.join(current_path, 'text_encoder'), local_files_only=True)
-    ctx = init_empty_weights if is_accelerate_available else nullcontext
-    with ctx():
-        text_encoder = CLIPTextModel(text_encoder_config)
-    text_encoder_sd = clip.get_sd()
-
-
-    from diffusers.pipelines.stable_diffusion.convert_from_ckpt import convert_open_clip_checkpoint,convert_ldm_clip_checkpoint
-    text_encoder = convert_ldm_clip_checkpoint(text_encoder_sd, text_encoder=text_encoder)
- 
-   
-    return text_encoder,text_encoder_2
 #https://github.com/Abecid/realtime-3d-stylization-drawing/blob/97a687f148cec04e107f7fec8986c8b5615af1ec/gradio_app.py#L33
 def glb2obj_(glb_path, obj_path):
     print('Converting glb to obj')
