@@ -37,6 +37,8 @@ class FlowEulerSampler(Sampler):
 
     def _inference_model(self, model, x_t, t, cond=None, **kwargs):
         t = torch.tensor([1000 * t] * x_t.shape[0], device=x_t.device, dtype=torch.float32)
+        if cond is not None and cond.shape[0] == 1 and x_t.shape[0] > 1:
+            cond = cond.repeat(x_t.shape[0], *([1] * (len(cond.shape) - 1)))
         return model(x_t, t, cond, **kwargs)
 
     def _get_model_prediction(self, model, x_t, t, cond=None, **kwargs):

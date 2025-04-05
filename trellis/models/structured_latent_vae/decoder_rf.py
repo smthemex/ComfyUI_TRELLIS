@@ -6,6 +6,7 @@ import numpy as np
 from ...modules import sparse as sp
 from .base import SparseTransformerBase
 from ...representations import Strivec
+from ..sparse_elastic_mixin import SparseTransformerElasticMixin
 
 
 class SLatRadianceFieldDecoder(SparseTransformerBase):
@@ -102,3 +103,11 @@ class SLatRadianceFieldDecoder(SparseTransformerBase):
         h = h.replace(F.layer_norm(h.feats, h.feats.shape[-1:]))
         h = self.out_layer(h)
         return self.to_representation(h)
+
+
+class ElasticSLatRadianceFieldDecoder(SparseTransformerElasticMixin, SLatRadianceFieldDecoder):
+    """
+    Slat VAE Radiance Field Decoder with elastic memory management.
+    Used for training with low VRAM.
+    """
+    pass

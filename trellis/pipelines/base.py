@@ -36,10 +36,12 @@ class Pipeline:
         with open(config_file, 'r') as f:
             args = json.load(f)['args']
 
-        _models = {
-            k: models.from_pretrained(f"{path}/{v}")
-            for k, v in args['models'].items()
-        }
+        _models = {}
+        for k, v in args['models'].items():
+            try:
+                _models[k] = models.from_pretrained(f"{path}/{v}")
+            except:
+                _models[k] = models.from_pretrained(v)
 
         new_pipeline = Pipeline(_models)
         new_pipeline._pretrained_args = args
