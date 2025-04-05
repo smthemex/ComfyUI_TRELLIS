@@ -1,0 +1,396 @@
+{
+  "last_node_id": 20,
+  "last_link_id": 18,
+  "nodes": [
+    {
+      "id": 13,
+      "type": "Trellis_LoadModel",
+      "pos": [
+        412.94915771484375,
+        258.421142578125
+      ],
+      "size": [
+        315,
+        130
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL_TRELLIS",
+          "links": [],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Trellis_LoadModel"
+      },
+      "widgets_values": [
+        "JeffreyXiang/TRELLIS-text-large",
+        "clip_l.safetensors",
+        "xformers",
+        "auto"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "Trellis_LoadModel",
+      "pos": [
+        414.76434326171875,
+        66.46409606933594
+      ],
+      "size": [
+        315,
+        130
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL_TRELLIS",
+          "links": [
+            17
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Trellis_LoadModel"
+      },
+      "widgets_values": [
+        "F:/test/ComfyUI/models/diffusers/JeffreyXiang/TRELLIS-image-large",
+        "dinov2_vitl14_reg4_pretrain.pth",
+        "xformers",
+        "auto"
+      ]
+    },
+    {
+      "id": 11,
+      "type": "Trellis_Sampler",
+      "pos": [
+        916.432373046875,
+        62.945556640625
+      ],
+      "size": [
+        403.8272705078125,
+        504
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL_TRELLIS",
+          "link": 17
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 18,
+          "shape": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model_path",
+          "type": "STRING",
+          "links": [
+            12
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Trellis_Sampler"
+      },
+      "widgets_values": [
+        "a 3d doll",
+        "",
+        1944519469,
+        "randomize",
+        7.5,
+        12,
+        3,
+        12,
+        false,
+        512,
+        0.95,
+        "opt",
+        false,
+        "multidiffusion",
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": 19,
+      "type": "LoadImage",
+      "pos": [
+        415.1371765136719,
+        444.3331604003906
+      ],
+      "size": [
+        315,
+        314
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            18
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "rabbit_2.png",
+        "image"
+      ]
+    },
+    {
+      "id": 18,
+      "type": "Load3D",
+      "pos": [
+        1364.0281982421875,
+        165.91384887695312
+      ],
+      "size": [
+        315,
+        600
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null
+        },
+        {
+          "name": "mesh_path",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Camera Info": {
+          "position": {
+            "x": 10,
+            "y": 10,
+            "z": 10.000000000000002
+          },
+          "target": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "zoom": 1,
+          "cameraType": "perspective"
+        },
+        "Node name for S&R": "Load3D",
+        "Show Grid": true
+      },
+      "widgets_values": [
+        "3d/8f436c82-ba9f-4433-aaef-ac2901eaed79_00140.glb",
+        "upload3dmodel",
+        "clear",
+        null,
+        1024,
+        1024,
+        true,
+        "perspective",
+        "front",
+        "original",
+        "#000000",
+        10,
+        "original"
+      ]
+    },
+    {
+      "id": 12,
+      "type": "ShowText|pysssss",
+      "pos": [
+        1376.1739501953125,
+        37.59229278564453
+      ],
+      "size": [
+        315,
+        76
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 12,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null,
+          "shape": 6
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ShowText|pysssss"
+      },
+      "widgets_values": [
+        "",
+        "F:\\ComfyUI311\\ComfyUI\\output/71302796-24c6-4170-a361-1c358ab3039e_56762.glb"
+      ]
+    },
+    {
+      "id": 20,
+      "type": "Load3D",
+      "pos": [
+        1700.5682373046875,
+        167.28379821777344
+      ],
+      "size": [
+        315,
+        600
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null
+        },
+        {
+          "name": "mesh_path",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Camera Info": {
+          "position": {
+            "x": 10,
+            "y": 10,
+            "z": 10.000000000000002
+          },
+          "target": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "zoom": 1,
+          "cameraType": "perspective"
+        },
+        "Node name for S&R": "Load3D",
+        "Show Grid": true
+      },
+      "widgets_values": [
+        "3d/71302796-24c6-4170-a361-1c358ab3039e_56762.glb",
+        "upload3dmodel",
+        "clear",
+        null,
+        1024,
+        1024,
+        true,
+        "perspective",
+        "front",
+        "original",
+        "#000000",
+        10,
+        "original"
+      ]
+    }
+  ],
+  "links": [
+    [
+      12,
+      11,
+      0,
+      12,
+      0,
+      "STRING"
+    ],
+    [
+      17,
+      10,
+      0,
+      11,
+      0,
+      "MODEL_TRELLIS"
+    ],
+    [
+      18,
+      19,
+      0,
+      11,
+      1,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "txt2 3D img2 3D",
+      "bounding": [
+        333.27655029296875,
+        -52.443336486816406,
+        1709.3699951171875,
+        845.9299926757812
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8625106581327022,
+      "offset": [
+        -129.26700079024147,
+        168.3969128487787
+      ]
+    }
+  },
+  "version": 0.4
+}
