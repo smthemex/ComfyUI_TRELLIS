@@ -5,10 +5,9 @@
 
 ---
 
-# Update 2025/04/5  
+# Update 2025/04/05  
 *  support txt to 3D and meshto3D
 * kaolin support torch2.6 now;    
-
   
 # 1. Installation
 
@@ -16,7 +15,6 @@ In the ./ComfyUI /custom_node directory, run the following:
 ```
 git clone https://github.com/smthemex/ComfyUI_TRELLIS.git
 ```
-
 ---
 
 # 2. Requirements  
@@ -88,11 +86,7 @@ Need ' pip install bpy ' and install ' blender '
 
 
 # 3. Models Required 
-* 3.1 TRELLIS_repo,download or using online...  
-[JeffreyXiang/TRELLIS-image-large](https://huggingface.co/JeffreyXiang/TRELLIS-image-large)   
-如果预下载下 ，在repo位置填写：x:/your/path/JeffreyXiang/TRELLIS-image-large  
-if pre download ,fill local path in repo like this: x:/your/path/JeffreyXiang/TRELLIS-image-large
-
+* 3.1 TRELLIS_repo,download or using online...  if use img mode [JeffreyXiang/TRELLIS-image-large](https://huggingface.co/JeffreyXiang/TRELLIS-image-large)   or txt mode [JeffreyXiang/TRELLIS-text-large](https://huggingface.co/JeffreyXiang/TRELLIS-text-large) 如果预下载 ，在repo位置填写：x:/your/path/JeffreyXiang/TRELLIS-image-large ;if pre download ,fill local path in repo like this: x:/your/path/JeffreyXiang/TRELLIS-image-large
 ```
 ├── anypath/JeffreyXiang/TRELLIS-image-large/
 |   ├── pipeline.json
@@ -118,9 +112,9 @@ if pre download ,fill local path in repo like this: x:/your/path/JeffreyXiang/TR
 因为官方的代码每次加载dinov2都要连GitHub，所以我改成了离线版的，需要下载dinov2模型，[地址](https://dl.fbaipublicfiles.com/dinov2/dinov2_vitl14/dinov2_vitl14_reg4_pretrain.pth) ,clip是常规的openai/clip-vit-large-patch14 模型，也为方便大陆用户改成了离线版
 模型放在comfyUI/models/dinov2和clip目录下
 ```
-├── ComfyUI/models/dinov2
+├── ComfyUI/models/dinov2 # if use img  mode
 |      ├── dinov2_vitl14_reg4_pretrain.pth
-├── ComfyUI/models/clip
+├── ComfyUI/models/clip # if use txt  mode
 |      ├── clip_l.safetensors
 ```
 
@@ -128,7 +122,7 @@ if pre download ,fill local path in repo like this: x:/your/path/JeffreyXiang/TR
 
 # 4 Example
 * img to 3D or txt to 3D
-![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/assets.png)
+![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/assets/example.png)
 
 
 
