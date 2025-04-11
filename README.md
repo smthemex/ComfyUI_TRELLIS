@@ -6,7 +6,8 @@
 ---
 
 # Update 2025/04/05  
-*  support txt to 3D and meshto3D
+* if update kaolin likes torch2.51 to 2.6 diff-gaussian-rasterization need rebuild. 如果升级kaolin，diff-gaussian-rasterization需要重新编译
+* support txt to 3D and meshto3D
 * kaolin support torch2.6 now;    
   
 # 1. Installation
@@ -122,6 +123,7 @@ Need ' pip install bpy ' and install ' blender '
 
 # 4 Example
 * img to 3D or txt to 3D
+![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/assets/example_.png)
 ![](https://github.com/smthemex/ComfyUI_TRELLIS/blob/main/assets/example.png)
 
 
