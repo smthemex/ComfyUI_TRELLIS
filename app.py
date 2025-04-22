@@ -58,7 +58,7 @@ def get_seed(randomize_seed: bool, seed: int) -> int:
     return np.random.randint(0, MAX_SEED) if randomize_seed else seed
 
 def image_to_3d(pipeline,image,preprocess_image:bool,covert2video:bool,trial_id: str, seed: int,ss_guidance_strength: float,
-                 ss_sampling_steps: int, slat_guidance_strength: float, slat_sampling_steps: int,mesh_simplify,texture_size,mode,is_multiimage,Gaussians2PLY,multiimage_algo):
+                 ss_sampling_steps: int, slat_guidance_strength: float, slat_sampling_steps: int,mesh_simplify,texture_size,mode,is_multiimage,gaussians2ply,multiimage_algo):
     """
     Convert an image to a 3D model.
 
@@ -107,10 +107,10 @@ def image_to_3d(pipeline,image,preprocess_image:bool,covert2video:bool,trial_id:
             mode=multiimage_algo,
         )
 
-    return prepare_output(outputs,covert2video,trial_id,is_multiimage,Gaussians2PLY,mesh_simplify,texture_size,mode)
+    return prepare_output(outputs,covert2video,trial_id,is_multiimage,gaussians2ply,mesh_simplify,texture_size,mode)
 
 
-def prepare_output(outputs,covert2video,trial_id,is_multiimage,Gaussians2PLY,mesh_simplify,texture_size,mode):
+def prepare_output(outputs,covert2video,trial_id,is_multiimage,gaussians2ply,mesh_simplify,texture_size,mode):
     if covert2video:
         video_path = f"{trial_id}.mp4"
         if is_multiimage:
@@ -130,8 +130,8 @@ def prepare_output(outputs,covert2video,trial_id,is_multiimage,Gaussians2PLY,mes
     state = pack_state(outputs['gaussian'][0], outputs['mesh'][0])
     torch.cuda.empty_cache()
     gs, mesh = unpack_state(state)
-    if Gaussians2PLY:
-        gs.save_ply(f"{trial_id}.ply")
+    if gaussians2ply:
+        gs.save_ply(f"{folder_paths.get_output_directory()}/{trial_id}.ply")
    
     glb = postprocessing_utils.to_glb(
         gs,
