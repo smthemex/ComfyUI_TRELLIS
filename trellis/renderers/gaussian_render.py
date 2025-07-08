@@ -16,7 +16,7 @@ from ..representations.gaussian import Gaussian
 from .sh_utils import eval_sh
 import torch.nn.functional as F
 from easydict import EasyDict as edict
-
+import inspect
 
 def intrinsics_to_projection(
         intrinsics: torch.Tensor,
@@ -68,23 +68,40 @@ def render_(viewpoint_camera, pc : Gaussian, pipe, bg_color : torch.Tensor, scal
     
     kernel_size = pipe.kernel_size
     subpixel_offset = torch.zeros((int(viewpoint_camera.image_height), int(viewpoint_camera.image_width), 2), dtype=torch.float32, device="cuda")
-
-    raster_settings = GaussianRasterizationSettings(
-        image_height=int(viewpoint_camera.image_height),
-        image_width=int(viewpoint_camera.image_width),
-        tanfovx=tanfovx,
-        tanfovy=tanfovy,
-        kernel_size=kernel_size,
-        subpixel_offset=subpixel_offset,
-        bg=bg_color,
-        scale_modifier=scaling_modifier,
-        viewmatrix=viewpoint_camera.world_view_transform,
-        projmatrix=viewpoint_camera.full_proj_transform,
-        sh_degree=pc.active_sh_degree,
-        campos=viewpoint_camera.camera_center,
-        prefiltered=False,
-        debug=pipe.debug
-    )
+    raster_settings_params = inspect.signature(GaussianRasterizationSettings).parameters.keys()
+    if "kernel_size" not in raster_settings_params or  "subpixel_offset" not in raster_settings_params:
+        print("GaussianRasterizationSettings is not right version . Please update your diff_gaussian_rasterization.now try running missing parameters mode")
+        raster_settings = GaussianRasterizationSettings(
+            image_height=int(viewpoint_camera.image_height),
+            image_width=int(viewpoint_camera.image_width),
+            tanfovx=tanfovx,
+            tanfovy=tanfovy,
+            bg=bg_color,
+            scale_modifier=scaling_modifier,
+            viewmatrix=viewpoint_camera.world_view_transform,
+            projmatrix=viewpoint_camera.full_proj_transform,
+            sh_degree=pc.active_sh_degree,
+            campos=viewpoint_camera.camera_center,
+            prefiltered=False,
+            debug=pipe.debug
+        )
+    else:  
+        raster_settings = GaussianRasterizationSettings(
+            image_height=int(viewpoint_camera.image_height),
+            image_width=int(viewpoint_camera.image_width),
+            tanfovx=tanfovx,
+            tanfovy=tanfovy,
+            kernel_size=kernel_size,
+            subpixel_offset=subpixel_offset,
+            bg=bg_color,
+            scale_modifier=scaling_modifier,
+            viewmatrix=viewpoint_camera.world_view_transform,
+            projmatrix=viewpoint_camera.full_proj_transform,
+            sh_degree=pc.active_sh_degree,
+            campos=viewpoint_camera.camera_center,
+            prefiltered=False,
+            debug=pipe.debug
+        )
     
     rasterizer = GaussianRasterizer(raster_settings=raster_settings)
 
@@ -120,7 +137,8 @@ def render_(viewpoint_camera, pc : Gaussian, pipe, bg_color : torch.Tensor, scal
         colors_precomp = override_color
 
     # Rasterize visible Gaussians to image, obtain their radii (on screen). 
-    rendered_image, radii = rasterizer(
+  
+    rendered_results = rasterizer(
         means3D = means3D,
         means2D = means2D,
         shs = shs,
@@ -130,6 +148,9 @@ def render_(viewpoint_camera, pc : Gaussian, pipe, bg_color : torch.Tensor, scal
         rotations = rotations,
         cov3D_precomp = cov3D_precomp
     )
+    # some diff_gaussian_rasterization outputs is color, radii, depth, alpha
+    rendered_image = rendered_results[0]
+    radii = rendered_results[1]
     
     # Those Gaussians that were frustum culled or had a radius of 0 were not visible.
     # They will be excluded from value updates used in the splitting criteria.
