@@ -65,7 +65,7 @@ pip install ./tmp/extensions/vox2seq
 
 **2.1 Other Need**
 * [kaolin](https://nvidia-kaolin.s3.us-east-2.amazonaws.com/index.html)   find  wheel，or install [normal](https://github.com/NVIDIAGameWorks/kaolin)在这里找kaolin的各种版本轮子
-* [flash attention](https://github.com/Dao-AILab/flash-attention/releases/)  find  wheel,在这里找flash attention的各种版本轮子
+* [flash attention](https://github.com/Dao-AILab/flash-attention/releases/) or [windows/linux](https://github.com/mjun0812/flash-attention-prebuild-wheels) find  wheel,在这里找flash attention的各种版本轮子
 * [visualstudio](https://visualstudio.microsoft.com/zh-hans/)   visual studio2019 or high   windows必须安装
 * [spconv](https://github.com/traveller59/spconv)  find your cuda version ,if version.120 use spconv-cu120  cuda版本大于120的只能用spconv-cu120，其他根据对应地址版本安装
 * if somebody install nvdiffrast fail can see how to  fix it  in [here  ](https://www.bilibili.com/video/BV1PMkEYzE8h/?vd_source=602446aa977e356a8a57180ba0877271)
